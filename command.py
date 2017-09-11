@@ -46,7 +46,7 @@ class SingleCommand(Command):
 
     @classmethod
     def get_public_commands(cls):
-        return ['incr', 'set', 'exists', 'incrby', 'get']
+        return ['incr', 'set', 'exists', 'incrby', 'get', 'delete']
 
     @classmethod
     def get_namespace_name(cls):
@@ -73,6 +73,11 @@ class SingleCommand(Command):
             return ErrorType("value is not an integer or out of range")
         self.namespace[key] = str(value + 1)
         return IntegerType(self.namespace[key])
+
+    def delete(self, key):
+        if key in self.namespace:
+            del self.namespace[key]
+        return StrType("OK")
 
     def incrby(self, key, amount):
         try:
