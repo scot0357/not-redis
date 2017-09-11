@@ -4,15 +4,8 @@ import namespace
 
 
 ENCODING = 'utf8'
-
-
-def command_handler(data):
-    values = shlex.split(data)
-
-    print(command)
-    print(values)
-
-    return data
+READ_CHUNK = 4096
+EXIT = 'exit'
 
 
 async def handle_echo(reader, writer):
@@ -22,11 +15,12 @@ async def handle_echo(reader, writer):
     should_loop = True
     while should_loop:
 
-        writer.write('redis>'.encode(ENCODING))
+        writer.write('not-redis> '.encode(ENCODING))
 
-        data = await reader.read(4096)
+        data = await reader.read(READ_CHUNK)
         message = data.decode()
-        if message.strip() == "exit":
+
+        if message.strip() == EXIT:
             should_loop = False
         else:
             result = command.exec_command(message, namespaces)
